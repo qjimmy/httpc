@@ -1,23 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NEW_LINE } from 'src/constants';
-import { HeaderService } from './header.service';
+import { HeadersDict } from './header.service';
 
 const mockHeaders: Record<string, string> = {
   Accept: '*/*',
   'Content-Type': 'application/json',
 };
 
-describe('HeaderService', () => {
-  let service: HeaderService;
+describe('HeadersDict', () => {
+  let service: HeadersDict;
   let headers: Map<string, string>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [HeaderService, Map],
-      exports: [HeaderService],
+      providers: [HeadersDict, Map],
+      exports: [HeadersDict],
     }).compile();
 
-    service = module.get<HeaderService>(HeaderService);
+    service = module.get<HeadersDict>(HeadersDict);
     headers = module.get<Map<string, string>>(Map);
   });
 

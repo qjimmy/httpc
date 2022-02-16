@@ -8,3 +8,5 @@ export enum Http {
   GET = 'GET',
   POST = 'POST',
 }
+
+export const PORT = 80;
