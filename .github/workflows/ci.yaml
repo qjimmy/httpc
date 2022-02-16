@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - feat/**
 
 env:
   node-version: '14'

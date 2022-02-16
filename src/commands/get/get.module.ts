@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { HeaderModule } from 'src/header/header.module';
-import { LogService } from 'src/log/log.service';
-import { TcpModule } from 'src/tcp/tcp.module';
+import { FileModule, HeaderModule, TcpModule } from 'src/modules';
+import { LogService } from 'src/modules/log/log.service';
 import { GetCommand } from './get.command';
 
 @Module({
-  imports: [TcpModule, HeaderModule],
+  imports: [TcpModule, HeaderModule, FileModule],
   providers: [GetCommand, LogService],
 })
 export class GetModule {}

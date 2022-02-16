@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { Socket } from 'net';
-import { HeaderModule } from 'src/header/header.module';
+import { HeaderModule } from 'src/modules/header/header.module';
 import { TcpService } from './tcp.service';
 
 @Module({

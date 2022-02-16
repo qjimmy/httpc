@@ -1,18 +1,11 @@
-FROM node:14 as builder 
+FROM node:14-alpine
 
-COPY . /app/httpc
+COPY . /app
 
-WORKDIR /app/httpc
+WORKDIR /app
 
-RUN yarn install --frozen-lockfile
-RUN yarn build
+RUN npm install
+RUN npm run build
+RUN npm link
 
-FROM node:14-alpine as production
-
-WORKDIR /app/httpc
-
-COPY --from=build /app/httpc/dist /app/httpc/dist
-
-RUN yarn install --frozen-lockfile --production
-
-ENTRYPOINT ["path to exec"]
+ENTRYPOINT ["/usr/local/bin/httpc"]

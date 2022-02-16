@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { HttpcModule } from './httpc.module';
 import { CommandFactory } from 'nest-commander';
 

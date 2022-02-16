@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { NEW_LINE } from 'src/constants';
 
 @Injectable()
-export class HeaderService {
+export class HeadersDict {
   private readonly EMPTY_STRING = '';
 
   constructor(private readonly headers: Map<string, string>) {
@@ -12,9 +12,13 @@ export class HeaderService {
   parseHeader(headerField: string): [string, string] {
     const [key, value] = headerField.split(':');
 
-    if (headerField.indexOf(':') === -1) {
-      // TODO: create custom error
-      throw new Error();
+    if (
+      headerField.indexOf(':') === -1 ||
+      headerField.match(new RegExp(/\:/, 'g')).length !== 1
+    ) {
+      throw new Error(
+        'Badly formatted headers option. Value must contain exactly 1 colon',
+      );
     }
 
     this.headers.set(key, value);

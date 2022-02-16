@@ -2,9 +2,12 @@
   "name": "httpc",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "qjimmy <quang.jimmy.developer@gmail.com>",
   "private": true,
   "license": "UNLICENSED",
+  "bin": {
+    "httpc": "dist/src/httpc.js"
+  },
   "scripts": {
     "httpc": "yarn ts-node -r tsconfig-paths/register src/httpc.ts",
     "prebuild": "rimraf dist",
@@ -13,7 +16,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/httpc",
+    "start:prod": "nest start",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
