@@ -16,6 +16,7 @@ import { HttpCommand } from '../http/http.command';
 })
 export class PostCommand extends HttpCommand implements CommandRunner {
   private body: string;
+  private file: string;
 
   constructor(
     private readonly tcpService: TcpService,
@@ -27,20 +28,30 @@ export class PostCommand extends HttpCommand implements CommandRunner {
   }
 
   async run(args: Array<string>): Promise<void> {
+    // Prevent having both -d and -f options used together
+    if (this.body && this.file) {
+      // TODO: throw exception with custom message
+    }
+
+    // Parse URL argument
     const [urlArgument] = args;
     const url = new URL(urlArgument);
 
+    // Send HTTP request using TCP socket
     const [responseHeaders, responseBody] = await this.tcpService.post(
       url,
       this.body,
     );
 
+    // Print response headers
     if (this.verbose) {
       this.logService.log(responseHeaders, NEW_LINE);
     }
 
+    // Print response body
     this.logService.log(responseBody);
 
+    // Output response to file
     if (this.output) {
       this.fileService.writeFile(this.output, this.verbose);
     }
@@ -58,8 +69,7 @@ export class PostCommand extends HttpCommand implements CommandRunner {
     `,
   })
   parseFileOption(value: string) {
-    // TODO: attach file to HTTP POST request
-    value;
+    this.file = value;
   }
 
   @Option({

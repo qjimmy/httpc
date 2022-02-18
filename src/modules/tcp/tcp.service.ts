@@ -13,10 +13,7 @@ interface ConstructRawRequestArguments {
 export class TcpService {
   private response: [string, string];
 
-  constructor(
-    private readonly socket: Socket,
-    private readonly headers: HeadersDict,
-  ) {}
+  constructor(private readonly headers: HeadersDict) {}
 
   /**
    * executes HTTP GET request based on url provided
@@ -26,21 +23,22 @@ export class TcpService {
    * @returns {[string, string]} Headers and body of the response from the GET request
    */
   async get(url: URL): Promise<[string, string]> {
-    this.socket.connect(PORT, url.host);
+    const socket = new Socket();
+    socket.connect(PORT, url.host);
     this.headers.set('Host', url.host);
 
-    this.socket.on('connect', () => {
+    socket.on('connect', () => {
       const rawHttpRequest = this.constructRawRequest({
         url,
         method: Http.GET,
       });
 
-      this.socket.write(rawHttpRequest);
+      socket.write(rawHttpRequest);
     });
 
     return new Promise<[string, string]>((resolve) => {
-      this.socket.on('data', (data: Buffer) => {
-        this.socket.destroy();
+      socket.on('data', (data: Buffer) => {
+        socket.destroy();
 
         const response = data.toString().split(LINE_JUMP) as [string, string];
         this.response = response;
@@ -59,26 +57,24 @@ export class TcpService {
    * @returns {[string, string]} Headers and body of the response from the POST request
    */
   async post(url: URL, body?: string): Promise<[string, string]> {
-    this.socket.connect(PORT, url.host);
+    const socket = new Socket();
+    socket.connect(PORT, url.host);
     this.headers.set('Host', url.host);
+    this.headers.set('Content-Length', String(body?.length || 0));
 
-    if (body) {
-      this.headers.set('Content-Length', String(body.length));
-    }
-
-    this.socket.on('connect', () => {
+    socket.on('connect', () => {
       const rawHttpRequest = this.constructRawRequest({
         url,
         method: Http.POST,
         body,
       });
 
-      this.socket.write(rawHttpRequest);
+      socket.write(rawHttpRequest);
     });
 
     return new Promise<[string, string]>((resolve) => {
-      this.socket.on('data', (data: Buffer) => {
-        this.socket.destroy();
+      socket.on('data', (data: Buffer) => {
+        socket.destroy();
 
         const response = data.toString().split(LINE_JUMP) as [string, string];
         this.response = response;

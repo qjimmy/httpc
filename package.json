@@ -10,6 +10,7 @@
   },
   "scripts": {
     "httpc": "yarn ts-node -r tsconfig-paths/register src/httpc.ts",
+    "run:demo": "yarn ts-node -r tsconfig-paths/register ./demo.ts",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

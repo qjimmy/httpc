@@ -25,17 +25,22 @@ export class GetCommand extends HttpCommand implements CommandRunner {
   }
 
   async run(args: Array<string>): Promise<void> {
+    // Parse URL argument
     const [urlArgument] = args;
     const url = new URL(urlArgument);
 
+    // Send HTTP request using TCP socket
     const [responseHeaders, responseBody] = await this.tcpService.get(url);
 
+    // Print response headers
     if (this.verbose) {
       this.logService.log(responseHeaders, NEW_LINE);
     }
 
+    // Print response body
     this.logService.log(responseBody);
 
+    // Output response to file
     if (this.output) {
       this.fileService.writeFile(this.output, this.verbose);
     }
