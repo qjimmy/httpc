@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TcpService } from 'src/modules/tcp/tcp.service';
 import { LogService } from 'src/modules/log/log.service';
+import { LINE_JUMP } from 'src/constants';
 
 jest.mock('fs');
 jest.mock('path');
@@ -36,17 +37,44 @@ describe('FileService', () => {
     const mockPath = '/file.txt';
     const mockResponseTuple = ['headers', 'body'] as [string, string];
 
+    jest.spyOn(fs, 'appendFileSync');
+    jest.spyOn(logService, 'log');
     jest.spyOn(path, 'join').mockReturnValue(mockPath);
     jest
       .spyOn(tcpService, 'getResponseData')
       .mockReturnValue(mockResponseTuple);
-    jest.spyOn(fs, 'appendFile').mockImplementation(() => {
-      logService.log();
-    });
-    jest.spyOn(logService, 'log');
 
     expect(service.writeFile(mockPath));
-    expect(fs.appendFile).toBeCalled();
+    expect(fs.appendFileSync).toBeCalledWith(mockPath, mockResponseTuple[1]);
     expect(logService.log).toBeCalled();
+  });
+
+  it('should be able to append to a file with the verbose option', () => {
+    const mockPath = '/file.txt';
+    const mockResponseTuple = ['headers', 'body'] as [string, string];
+
+    jest.spyOn(fs, 'appendFileSync');
+    jest.spyOn(logService, 'log');
+    jest.spyOn(path, 'join').mockReturnValue(mockPath);
+    jest
+      .spyOn(tcpService, 'getResponseData')
+      .mockReturnValue(mockResponseTuple);
+
+    expect(service.writeFile(mockPath, true));
+    expect(fs.appendFileSync).toBeCalledWith(
+      mockPath,
+      mockResponseTuple[0].concat(LINE_JUMP).concat(mockResponseTuple[1]),
+    );
+    expect(logService.log).toBeCalled();
+  });
+
+  it('should be able to read file contents', () => {
+    const mockPath = '/file.txt';
+    const mockFileContent = 'mock file content';
+
+    jest.spyOn(fs, 'readFileSync').mockReturnValue(mockFileContent);
+
+    expect(service.readFileContents(mockPath)).toEqual(mockFileContent);
+    expect(fs.readFileSync).toBeCalledWith(mockPath, 'utf-8');
   });
 });

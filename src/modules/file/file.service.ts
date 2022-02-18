@@ -16,19 +16,19 @@ export class FileService {
     private readonly logger: LogService,
   ) {}
 
-  writeFile(filePath: string, verbose = false) {
+  writeFile(filePath: string, verbose = false): void {
     const outputPath = path.join(this.callerDirectory, filePath);
     const [responseHeaders, responseBody] = this.tcpService.getResponseData();
 
-    fs.appendFile(
-      path.join(this.callerDirectory, filePath),
+    fs.appendFileSync(
+      outputPath,
       verbose ? responseHeaders.concat(LINE_JUMP, responseBody) : responseBody,
-      (err: NodeJS.ErrnoException | null) => {
-        if (err) {
-          throw err;
-        }
-        this.logger.log(`${LINE_JUMP} File written to ${outputPath}`);
-      },
     );
+    this.logger.log(`${LINE_JUMP} File written to ${outputPath}`);
+  }
+
+  readFileContents(filePath: string): string {
+    const absolutePath = path.join(this.callerDirectory, filePath);
+    return fs.readFileSync(absolutePath, 'utf-8');
   }
 }

@@ -1,23 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Socket } from 'net';
 import { Http, LINE_JUMP, NEW_LINE } from 'src/constants';
 import { HeaderModule } from 'src/modules/header/header.module';
 import { TcpService } from './tcp.service';
 
 describe('TcpService', () => {
   let service: TcpService;
-  let socket: Socket;
   let headers: Map<string, string>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [HeaderModule],
-      providers: [TcpService, Socket],
+      providers: [TcpService],
       exports: [TcpService],
     }).compile();
 
     service = module.get<TcpService>(TcpService);
-    socket = module.get<Socket>(Socket);
     headers = module.get<Map<string, string>>(Map);
   });
 
@@ -26,36 +23,21 @@ describe('TcpService', () => {
   });
 
   it('should be able to send an HTTP GET request through a TCP socket', async () => {
-    const mockPort = 80;
     const mockUrl = new URL('https://www.google.com/');
 
-    jest.spyOn(socket, 'connect');
-    jest.spyOn(socket, 'destroy');
-
     expect(await service.get(mockUrl)).toBeDefined();
-    expect(socket.connect).toBeCalledWith(mockPort, mockUrl.host);
-    expect(socket.destroy).toBeCalledTimes(1);
   });
 
   it('should be able to send an HTTP POST request through a TCP socket', async () => {
-    const mockPort = 80;
     const mockUrl = new URL('https://www.google.com/');
 
-    jest.spyOn(socket, 'connect');
-    jest.spyOn(socket, 'destroy');
-
     expect(await service.post(mockUrl)).toBeDefined();
-    expect(socket.connect).toBeCalledWith(mockPort, mockUrl.host);
-    expect(socket.destroy).toBeCalledTimes(1);
   });
 
   it('should be able to send an HTTP POST request with a body', async () => {
-    const mockPort = 80;
     const mockUrl = new URL('https://www.google.com/');
     const mockBody = '{"key": "value"}';
 
-    jest.spyOn(socket, 'connect');
-    jest.spyOn(socket, 'destroy');
     jest.spyOn(headers, 'set');
 
     expect(await service.post(mockUrl, mockBody)).toBeDefined();
@@ -63,8 +45,6 @@ describe('TcpService', () => {
       'Content-Length',
       String(mockBody.length),
     );
-    expect(socket.connect).toBeCalledWith(mockPort, mockUrl.host);
-    expect(socket.destroy).toBeCalledTimes(1);
   });
 
   it('should be able to construct a raw HTTP request', () => {
