@@ -30,7 +30,11 @@ export class PostCommand extends HttpCommand implements CommandRunner {
   async run(args: Array<string>): Promise<void> {
     // Prevent having both -d and -f options used together
     if (this.body && this.file) {
-      // TODO: throw exception with custom message
+      throw new Error('Cannot pass file and inline data');
+    }
+
+    if (this.file) {
+      this.body = this.fileService.readFileContents(this.file);
     }
 
     // Parse URL argument

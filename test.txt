@@ -1,0 +1,10 @@
+This is the content of the file "test.txt"{
+  "args": {}, 
+  "headers": {
+    "Host": "httpbin.org", 
+    "User-Agent": "Concordia-HTTP/1.1", 
+    "X-Amzn-Trace-Id": "Root=1-620f2dc2-0b312c510d4a32b91b29af30"
+  }, 
+  "origin": "142.182.64.22", 
+  "url": "http://httpbin.org/get"
+}
