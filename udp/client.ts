@@ -1,5 +1,5 @@
 import { createSocket } from 'dgram';
-const fs = require('fs');
+import * as fs from 'fs';
 
 const PORT = 3000;
 
@@ -11,7 +11,7 @@ interface ConstructMessageOptions {
   sequenceNumber: number;
   host: string;
   port: number;
-  payload: string;
+  payload: any[];
 }
 
 enum PacketType {
@@ -23,21 +23,8 @@ enum PacketType {
 }
 
 //buffer msg
-const data = Buffer.from([
-  0,
-  0,
-  0,
-  0,
-  1,
-  127,
-  0,
-  0,
-  1,
-  31,
-  71,
-  +file2Bytes('../test.txt'),
-]);
 
+const textFile = file2Bytes('test.txt');
 /**
  * example: 1 -> [0, 0, 0, 1];
  */
@@ -67,10 +54,10 @@ function bigEndian(port: number): [number, number] {
 }
 function file2Bytes(filePath) {
   const fileData = fs.readFileSync(filePath).toString('hex');
-  // let result = [];
-  // for (var i = 0; i < fileData.length; i += 2)
-  //   result.push('0x' + fileData[i] + '' + fileData[i + 1]);
-  return fileData;
+  let result = [];
+  for (var i = 0; i < fileData.length; i += 2)
+    result.push('0x' + fileData[i] + '' + fileData[i + 1]);
+  return result;
 }
 
 function constructMessage({
@@ -105,13 +92,24 @@ console.log(
     sequenceNumber: 1,
     host: '127.0.0.1',
     port: 8007,
-    payload: 'Hi S',
+    payload: textFile,
   }),
 );
 
 //sending msg
-client.send(data, PORT, '127.0.0.1', function (error) {
-  if (error) {
-    client.close();
-  }
-});
+client.send(
+  constructMessage({
+    type: PacketType.Data,
+    sequenceNumber: 1,
+    host: '127.0.0.1',
+    port: 8007,
+    payload: textFile,
+  }),
+  PORT,
+  '127.0.0.1',
+  function (error) {
+    if (error) {
+      client.close();
+    }
+  },
+);
