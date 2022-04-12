@@ -1,4 +1,5 @@
 import { createSocket } from 'dgram';
+const fs = require('fs');
 
 const PORT = 3000;
 
@@ -23,7 +24,18 @@ enum PacketType {
 
 //buffer msg
 const data = Buffer.from([
-  0, 0, 0, 0, 1, 127, 0, 0, 1, 31, 71, 72, 105, 32, 83,
+  0,
+  0,
+  0,
+  0,
+  1,
+  127,
+  0,
+  0,
+  1,
+  31,
+  71,
+  +file2Bytes('../test.txt'),
 ]);
 
 /**
@@ -52,6 +64,13 @@ function validateIpAddressTo4BytesArray(host: string): Array<number> {
 function bigEndian(port: number): [number, number] {
   const MAX = 256;
   return [Math.floor(port / MAX), port % MAX];
+}
+function file2Bytes(filePath) {
+  const fileData = fs.readFileSync(filePath).toString('hex');
+  // let result = [];
+  // for (var i = 0; i < fileData.length; i += 2)
+  //   result.push('0x' + fileData[i] + '' + fileData[i + 1]);
+  return fileData;
 }
 
 function constructMessage({
