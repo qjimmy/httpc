@@ -11,6 +11,8 @@
   "scripts": {
     "httpc": "yarn ts-node -r tsconfig-paths/register src/httpc.ts",
     "run:demo": "yarn ts-node -r tsconfig-paths/register ./demo.ts",
+    "run:udp:client": "yarn ts-node ./udp/client",
+    "run:udp:server": "yarn ts-node ./udp/server",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\"",

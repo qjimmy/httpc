@@ -1,6 +1,6 @@
 import { createSocket } from 'dgram';
 
-// --------------------creating a udp server --------------------
+const PORT = 8007;
 
 // creating a udp server
 const server = createSocket('udp4');
@@ -19,6 +19,7 @@ server.on('message', function (msg, info) {
     msg.length,
     info.address,
     info.port,
+    '\n',
   );
 
   //sending msg
@@ -34,7 +35,7 @@ server.on('message', function (msg, info) {
 //emits when socket is ready and listening for datagram msgs
 server.on('listening', function () {
   const { port, family, address } = server.address();
-  console.log('Server is listening at port' + port);
+  console.log('Server is listening at port ' + port);
   console.log('Server ip :' + address);
   console.log('Server is IP4/IP6 : ' + family + '\n\n');
 });
@@ -44,4 +45,4 @@ server.on('close', function () {
   console.log('Socket is closed !');
 });
 
-server.bind(3000);
+server.bind(PORT);
