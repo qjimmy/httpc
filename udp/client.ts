@@ -61,12 +61,13 @@ function constructMessage({
   port,
   payload,
 }: ConstructMessageOptions) {
-  return [
+  return Buffer.from([
     type,
     ...numberTo4BytesArray(sequenceNumber),
     ...validateIpAddressTo4BytesArray(host),
     ...bigEndian(port),
-  ];
+    ...Buffer.from(payload),
+  ]);
 }
 
 client.on('message', function (msg, info) {
@@ -79,8 +80,18 @@ client.on('message', function (msg, info) {
   );
 });
 
+console.log(
+  constructMessage({
+    type: PacketType.Data,
+    sequenceNumber: 1,
+    host: '127.0.0.1',
+    port: 8007,
+    payload: 'Hi S',
+  }),
+);
+
 //sending msg
-client.send(data, PORT, 'localhost', function (error) {
+client.send(data, PORT, '127.0.0.1', function (error) {
   if (error) {
     client.close();
   }
